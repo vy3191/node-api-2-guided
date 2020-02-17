@@ -100,6 +100,25 @@ router.delete("/:id", (req, res) => {
 		})
 })
 
+router.get("/:id/messages", (req,res) => {
+  hubs.findHubMessages(req.params.id)
+      .then(msg => {
+        res.json(msg);
+      })
+      .catch(err => {
+        res.status(500).json({msg:err});
+      })
+});
 
+router.get("/:hubId/messages/:messageId", (req,res) => {
+   hubs.findHubMessageById(hubId,messageId)
+       .then( message => {
+          if(!message) res.status(404).json({msg:'There is no message with this id'});
+          res.json(message);
+       })
+       .catch(err => {
+        res.status(500).json({msg:err});
+      })
+})
 
 module.exports = router;
