@@ -1,7 +1,8 @@
 const express = require('express');
+const hubs = require("./hubs-model")
 const router = express.Router();
 
-server.get("/", (req, res) => {
+router.get("/", (req, res) => {
 	console.log(req.query)
 	hubs.find()
 		.then((hubs) => {
@@ -15,7 +16,7 @@ server.get("/", (req, res) => {
 		})
 })
 
-server.get("/:id", (req, res) => {
+router.get("/:id", (req, res) => {
 	hubs.findById(req.params.id)
 		.then((hub) => {
 			if (hub) {
@@ -34,7 +35,7 @@ server.get("/:id", (req, res) => {
 		})
 })
 
-server.post("/", (req, res) => {
+router.post("/", (req, res) => {
 	if (!req.body.name) {
 		return res.status(400).json({
 			message: "Missing hub name",
@@ -53,7 +54,7 @@ server.post("/", (req, res) => {
 		})
 })
 
-server.put("/:id", (req, res) => {
+router.put("/:id", (req, res) => {
 	if (!req.body.name) {
 		return res.status(400).json({
 			message: "Missing hub name",
@@ -78,7 +79,7 @@ server.put("/:id", (req, res) => {
 		})
 })
 
-server.delete("/:id", (req, res) => {
+router.delete("/:id", (req, res) => {
 	hubs.remove(req.params.id)
 		.then((count) => {
 			if (count > 0) {
