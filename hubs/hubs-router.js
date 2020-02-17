@@ -1,6 +1,6 @@
 const express = require('express');
 const hubs = require("./hubs-model")
-const router = express.Router();
+const router = express.Router({mergeParams:true});
 
 router.get("/", (req, res) => {
 	console.log(req.query)
@@ -111,7 +111,7 @@ router.get("/:id/messages", (req,res) => {
 });
 
 router.get("/:hubId/messages/:messageId", (req,res) => {
-   hubs.findHubMessageById(hubId,messageId)
+   hubs.findHubMessageById(req.params.hubId,req.params.messageId)
        .then( message => {
           if(!message) res.status(404).json({msg:'There is no message with this id'});
           res.json(message);
@@ -119,6 +119,19 @@ router.get("/:hubId/messages/:messageId", (req,res) => {
        .catch(err => {
         res.status(500).json({msg:err});
       })
+});
+
+router.post("/:id/messages", (req,res) => {
+   const {id} = req.params;
+   const{ sender, text} = req.body;
+   if(!sender || !text) res.status(400).json({msg: 'Either sender or text is missing'});
+   hubs.addHubMessage(id, {sender,text})
+       .then( response => {
+          res.status(201).json(response);
+       })
+       .catch(err => {
+        res.status(500).json({msg:err});
+      });
 })
 
 module.exports = router;
